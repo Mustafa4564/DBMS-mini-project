@@ -5,163 +5,142 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RetailHub - MySQL Edition</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin:0; padding:0; box-sizing:border-box; }
     :root {
-      --primary: #0f172a;
-      --accent:  #6366f1;
-      --accent-light: #818cf8;
-      --success: #10b981;
-      --danger:  #ef4444;
-      --warning: #f59e0b;
-      --bg:      #f8fafc;
-      --surface: #ffffff;
-      --border:  #e2e8f0;
-      --text-primary:   #0f172a;
-      --text-secondary: #64748b;
-      --shadow:    0 10px 30px rgba(15,23,42,.1);
-      --shadow-lg: 0 20px 50px rgba(15,23,42,.15);
+      --accent:#6366f1; --accent-light:#818cf8;
+      --success:#10b981; --danger:#ef4444; --warning:#f59e0b;
+      --bg:#f8fafc; --surface:#fff; --border:#e2e8f0;
+      --text:#0f172a; --muted:#64748b;
+      --shadow:0 10px 30px rgba(15,23,42,.1);
+      --shadow-lg:0 20px 50px rgba(15,23,42,.15);
     }
-    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-           background:linear-gradient(135deg,#f8fafc,#f1f5f9);
-           color:var(--text-primary); line-height:1.6; }
+    body { font-family:'Segoe UI',sans-serif; background:linear-gradient(135deg,#f8fafc,#f1f5f9); color:var(--text); line-height:1.6; }
+
+    /* BANNER */
+    #mode-banner { padding:.6rem 2rem; font-size:.85rem; font-weight:600; text-align:center; display:none; }
+    #mode-banner.demo { background:#fef3c7; color:#78350f; display:block; }
+    #mode-banner.live { background:#d1fae5; color:#065f46; display:block; }
 
     /* NAV */
-    nav { background:var(--surface); border-bottom:1px solid var(--border);
-          padding:1rem 2rem; display:flex; justify-content:space-between;
-          align-items:center; box-shadow:var(--shadow); position:sticky; top:0; z-index:100; }
+    nav { background:var(--surface); border-bottom:1px solid var(--border); padding:1rem 2rem;
+          display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow);
+          position:sticky; top:0; z-index:100; }
     .nav-brand { font-size:1.5rem; font-weight:700;
                  background:linear-gradient(135deg,var(--accent),var(--accent-light));
-                 -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-                 background-clip:text; }
-    .nav-menu { display:flex; gap:2rem; list-style:none; }
+                 -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .nav-menu { display:flex; gap:1.5rem; list-style:none; }
     .nav-menu button { background:none; border:none; cursor:pointer; padding:.5rem 1rem;
-                       font-size:1rem; color:var(--text-secondary); border-radius:6px;
-                       transition:all .3s; }
+                       font-size:.95rem; color:var(--muted); border-radius:6px; transition:all .3s; }
     .nav-menu button:hover, .nav-menu button.active { color:var(--accent); background:#e0e7ff; }
 
     /* LAYOUT */
     .container { max-width:1200px; margin:0 auto; padding:2rem; }
-    .tab-content { display:none; animation:fadeIn .5s ease; }
+    .tab-content { display:none; animation:fadeIn .4s ease; }
     .tab-content.active { display:block; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
-    /* CARD */
+    /* CARDS */
     .card { background:var(--surface); border:1px solid var(--border); border-radius:12px;
             padding:1.5rem; margin-bottom:1.5rem; box-shadow:var(--shadow); transition:all .3s; }
     .card:hover { box-shadow:var(--shadow-lg); border-color:var(--accent); }
     .card-header { display:flex; justify-content:space-between; align-items:center;
                    margin-bottom:1rem; border-bottom:2px solid var(--border); padding-bottom:1rem; }
-    .card-title { font-size:1.25rem; font-weight:600; }
+    .card-title { font-size:1.2rem; font-weight:600; }
 
     /* FORMS */
     .form-group { margin-bottom:1rem; }
-    label { display:block; margin-bottom:.5rem; font-weight:500; }
-    input, select, textarea { width:100%; padding:.75rem; border:1px solid var(--border);
-                              border-radius:8px; font-size:1rem; font-family:inherit; transition:all .3s; }
+    label { display:block; margin-bottom:.4rem; font-weight:500; font-size:.9rem; }
+    input, select, textarea { width:100%; padding:.7rem; border:1px solid var(--border);
+                              border-radius:8px; font-size:.95rem; font-family:inherit; transition:all .3s; }
     input:focus, select:focus, textarea:focus { outline:none; border-color:var(--accent);
                                                box-shadow:0 0 0 3px rgba(99,102,241,.1); }
+    input:disabled { background:var(--bg); color:var(--muted); }
 
     /* BUTTONS */
-    .btn { padding:.75rem 1.5rem; border:none; border-radius:8px; font-size:1rem;
-           font-weight:600; cursor:pointer; transition:all .3s;
-           display:inline-flex; align-items:center; gap:.5rem; }
+    .btn { padding:.65rem 1.3rem; border:none; border-radius:8px; font-size:.9rem;
+           font-weight:600; cursor:pointer; transition:all .3s; display:inline-flex; align-items:center; gap:.4rem; }
     .btn-primary { background:linear-gradient(135deg,var(--accent),var(--accent-light)); color:#fff; }
     .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(99,102,241,.3); }
     .btn-secondary { background:#e0e7ff; color:var(--accent); }
     .btn-danger { background:var(--danger); color:#fff; }
     .btn-danger:hover { background:#dc2626; }
-    .btn-small { padding:.4rem .9rem; font-size:.85rem; }
+    .btn-sm { padding:.35rem .8rem; font-size:.8rem; }
 
     /* TABLE */
-    .table-wrapper { overflow-x:auto; }
-    table { width:100%; border-collapse:collapse; }
-    th { background:var(--bg); padding:1rem; text-align:left; font-weight:600;
-         border-bottom:2px solid var(--border); }
-    td { padding:1rem; border-bottom:1px solid var(--border); vertical-align:middle; }
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; font-size:.9rem; }
+    th { background:var(--bg); padding:.9rem 1rem; text-align:left; font-weight:600; border-bottom:2px solid var(--border); }
+    td { padding:.85rem 1rem; border-bottom:1px solid var(--border); vertical-align:middle; }
     tr:hover { background:var(--bg); }
 
     /* PRODUCT GRID */
-    .product-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-                    gap:1.5rem; margin-bottom:2rem; }
+    .product-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:1.5rem; margin-bottom:2rem; }
     .product-card { background:var(--surface); border:1px solid var(--border); border-radius:12px;
                     overflow:hidden; box-shadow:var(--shadow); transition:all .3s; }
-    .product-card:hover { transform:translateY(-5px); box-shadow:var(--shadow-lg); border-color:var(--accent); }
-    .product-image { width:100%; height:160px;
-                     background:linear-gradient(135deg,var(--accent),var(--accent-light));
-                     display:flex; align-items:center; justify-content:center;
-                     color:#fff; font-size:3rem; }
-    .product-body { padding:1.25rem; }
-    .product-name  { font-size:1.1rem; font-weight:600; margin-bottom:.4rem; }
+    .product-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); border-color:var(--accent); }
+    .product-img { height:140px; background:linear-gradient(135deg,var(--accent),var(--accent-light));
+                   display:flex; align-items:center; justify-content:center; font-size:2.5rem; }
+    .product-body { padding:1.2rem; }
+    .product-name  { font-weight:600; font-size:1rem; margin-bottom:.3rem; }
     .product-price { font-size:1.4rem; font-weight:700; color:var(--accent); margin-bottom:.3rem; }
-    .product-stock { font-size:.85rem; color:var(--text-secondary); margin-bottom:1rem; }
-    .product-stock.low  { color:var(--warning); }
-    .product-stock.out  { color:var(--danger); }
+    .product-stock { font-size:.82rem; margin-bottom:.8rem; }
+    .stock-ok  { color:var(--success); }
+    .stock-low { color:var(--warning); }
+    .stock-out { color:var(--danger); }
 
     /* ALERTS */
-    .alert { padding:1rem; border-radius:8px; margin-bottom:1rem; animation:slideIn .3s ease; }
-    @keyframes slideIn { from{transform:translateX(-20px);opacity:0} to{transform:translateX(0);opacity:1} }
+    .alert { padding:.85rem 1rem; border-radius:8px; margin-bottom:1rem; animation:slideIn .3s ease; font-size:.9rem; }
+    @keyframes slideIn { from{transform:translateX(-15px);opacity:0} to{transform:translateX(0);opacity:1} }
     .alert-success { background:#d1fae5; border:1px solid #6ee7b7; color:#065f46; }
-    .alert-danger   { background:#fee2e2; border:1px solid #fca5a5; color:#7f1d1d; }
-    .alert-info     { background:#dbeafe; border:1px solid #93c5fd; color:#1e3a8a; }
+    .alert-danger  { background:#fee2e2; border:1px solid #fca5a5; color:#7f1d1d; }
+    .alert-info    { background:#dbeafe; border:1px solid #93c5fd; color:#1e3a8a; }
 
     /* STATS */
-    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-                  gap:1.5rem; margin-bottom:2rem; }
+    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1.5rem; margin-bottom:2rem; }
     .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:12px;
                  padding:1.5rem; text-align:center; box-shadow:var(--shadow); }
-    .stat-value { font-size:2rem; font-weight:700; color:var(--accent); margin-bottom:.5rem; }
-    .stat-label { color:var(--text-secondary); font-size:.875rem; text-transform:uppercase;
-                  letter-spacing:.05em; }
+    .stat-value { font-size:2rem; font-weight:700; color:var(--accent); margin-bottom:.3rem; }
+    .stat-label { color:var(--muted); font-size:.8rem; text-transform:uppercase; letter-spacing:.05em; }
+
+    /* BADGE */
+    .badge { display:inline-block; padding:.2rem .65rem; border-radius:20px;
+             font-size:.72rem; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+    .badge-pending   { background:#fef3c7; color:#78350f; }
+    .badge-shipped   { background:#dbeafe; color:#1e3a8a; }
+    .badge-delivered { background:#d1fae5; color:#065f46; }
+    .badge-cancelled { background:#fee2e2; color:#7f1d1d; }
 
     /* MODAL */
     .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5);
              z-index:1000; align-items:center; justify-content:center; }
     .modal.active { display:flex; animation:fadeIn .3s ease; }
     .modal-content { background:var(--surface); border-radius:12px; padding:2rem;
-                     max-width:500px; width:90%; box-shadow:var(--shadow-lg); }
-    .modal-header { font-size:1.4rem; font-weight:700; margin-bottom:1rem;
-                    border-bottom:2px solid var(--border); padding-bottom:1rem;
-                    display:flex; justify-content:space-between; }
-    .modal-close { cursor:pointer; color:var(--text-secondary); font-size:1.4rem; transition:color .3s; }
-    .modal-close:hover { color:var(--text-primary); }
+                     max-width:480px; width:90%; box-shadow:var(--shadow-lg); }
+    .modal-header { font-size:1.3rem; font-weight:700; margin-bottom:1rem;
+                    border-bottom:2px solid var(--border); padding-bottom:.8rem;
+                    display:flex; justify-content:space-between; align-items:center; }
+    .modal-close { cursor:pointer; color:var(--muted); font-size:1.3rem; line-height:1; }
+    .modal-close:hover { color:var(--text); }
 
-    /* BADGE */
-    .badge { display:inline-block; padding:.2rem .7rem; border-radius:20px;
-             font-size:.75rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
-    .badge-pending   { background:#fef3c7; color:#78350f; }
-    .badge-shipped   { background:#dbeafe; color:#1e3a8a; }
-    .badge-delivered { background:#d1fae5; color:#065f46; }
-    .badge-cancelled { background:#fee2e2; color:#7f1d1d; }
+    /* EMPTY */
+    .empty { text-align:center; padding:3rem 1rem; color:var(--muted); }
+    .empty-icon { font-size:2.5rem; margin-bottom:.8rem; }
 
-    /* LOADING */
-    .loading { text-align:center; padding:3rem; color:var(--text-secondary); }
-    .spinner { width:40px; height:40px; border:4px solid var(--border);
-               border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite;
-               margin:0 auto 1rem; }
-    @keyframes spin { to { transform:rotate(360deg); } }
-
-    /* EMPTY STATE */
-    .empty-state { text-align:center; padding:3rem; color:var(--text-secondary); }
-    .empty-icon  { font-size:3rem; margin-bottom:1rem; }
-
-    @media(max-width:768px) {
-      .nav-menu { gap:.5rem; }
-      .container { padding:1rem; }
-      .card { padding:1rem; }
-    }
+    @media(max-width:768px) { .nav-menu{gap:.5rem} .container{padding:1rem} .card{padding:1rem} }
   </style>
 </head>
 <body>
 
-<!-- NAVIGATION -->
+<div id="mode-banner"></div>
+
 <nav>
   <div class="nav-brand">📦 RetailHub</div>
   <ul class="nav-menu">
-    <li><button class="nav-btn active" data-tab="dashboard">Dashboard</button></li>
-    <li><button class="nav-btn" data-tab="products">Products</button></li>
-    <li><button class="nav-btn" data-tab="orders">Orders</button></li>
-    <li><button class="nav-btn" data-tab="customers">Customers</button></li>
-    <li><button class="nav-btn" data-tab="inventory">Inventory</button></li>
+    <li><button class="nav-btn active" data-tab="dashboard">📊 Dashboard</button></li>
+    <li><button class="nav-btn" data-tab="products">🛒 Products</button></li>
+    <li><button class="nav-btn" data-tab="orders">📋 Orders</button></li>
+    <li><button class="nav-btn" data-tab="customers">👤 Customers</button></li>
+    <li><button class="nav-btn" data-tab="inventory">📦 Inventory</button></li>
   </ul>
 </nav>
 
@@ -171,17 +150,17 @@
   <div id="dashboard" class="tab-content active">
     <h1 style="margin-bottom:2rem">Dashboard</h1>
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-value" id="stat-products">—</div><div class="stat-label">Total Products</div></div>
-      <div class="stat-card"><div class="stat-value" id="stat-customers">—</div><div class="stat-label">Total Customers</div></div>
-      <div class="stat-card"><div class="stat-value" id="stat-orders">—</div><div class="stat-label">Total Orders</div></div>
-      <div class="stat-card"><div class="stat-value" id="stat-revenue">—</div><div class="stat-label">Total Revenue</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-products">0</div><div class="stat-label">Products</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-customers">0</div><div class="stat-label">Customers</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-orders">0</div><div class="stat-label">Orders</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-revenue">$0</div><div class="stat-label">Revenue</div></div>
     </div>
     <h2 style="margin-bottom:1rem">Recent Orders</h2>
     <div class="card">
-      <div class="table-wrapper">
+      <div class="table-wrap">
         <table>
-          <thead><tr><th>Order</th><th>Customer</th><th>Product</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
-          <tbody id="recent-orders-body"></tbody>
+          <thead><tr><th>Order ID</th><th>Customer</th><th>Product</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody id="recent-tbody"></tbody>
         </table>
       </div>
     </div>
@@ -194,9 +173,7 @@
       <button class="btn btn-primary" onclick="openModal('product-modal')">+ Add Product</button>
     </div>
     <div id="products-alert"></div>
-    <div id="products-grid" class="product-grid">
-      <div class="loading"><div class="spinner"></div>Loading products…</div>
-    </div>
+    <div id="products-grid" class="product-grid"></div>
   </div>
 
   <!-- ORDERS -->
@@ -207,12 +184,10 @@
     </div>
     <div id="orders-alert"></div>
     <div class="card">
-      <div class="table-wrapper">
+      <div class="table-wrap">
         <table>
-          <thead><tr><th>Order ID</th><th>Customer</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
-          <tbody id="orders-body">
-            <tr><td colspan="8"><div class="loading"><div class="spinner"></div>Loading orders…</div></td></tr>
-          </tbody>
+          <thead><tr><th>Order ID</th><th>Customer</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th>Date</th><th>Update</th></tr></thead>
+          <tbody id="orders-tbody"></tbody>
         </table>
       </div>
     </div>
@@ -226,12 +201,10 @@
     </div>
     <div id="customers-alert"></div>
     <div class="card">
-      <div class="table-wrapper">
+      <div class="table-wrap">
         <table>
-          <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Orders</th><th>Total Spent</th><th>Joined</th><th>Actions</th></tr></thead>
-          <tbody id="customers-body">
-            <tr><td colspan="8"><div class="loading"><div class="spinner"></div>Loading customers…</div></td></tr>
-          </tbody>
+          <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Orders</th><th>Spent</th><th>Joined</th><th></th></tr></thead>
+          <tbody id="customers-tbody"></tbody>
         </table>
       </div>
     </div>
@@ -239,371 +212,391 @@
 
   <!-- INVENTORY -->
   <div id="inventory" class="tab-content">
-    <h1 style="margin-bottom:2rem">Inventory Management</h1>
+    <h1 style="margin-bottom:2rem">Inventory</h1>
     <div class="card">
       <div class="card-header"><div class="card-title">Stock Levels</div></div>
-      <div class="table-wrapper">
+      <div class="table-wrap">
         <table>
-          <thead><tr><th>Product</th><th>Category</th><th>Current Stock</th><th>Status</th><th>Unit Price</th><th>Adjust Stock</th></tr></thead>
-          <tbody id="inventory-body">
-            <tr><td colspan="6"><div class="loading"><div class="spinner"></div>Loading inventory…</div></td></tr>
-          </tbody>
+          <thead><tr><th>Product</th><th>Category</th><th>Stock</th><th>Status</th><th>Price</th><th>Adjust</th></tr></thead>
+          <tbody id="inventory-tbody"></tbody>
         </table>
       </div>
     </div>
   </div>
 
-</div><!-- /container -->
+</div>
 
-<!-- ======================== MODALS ======================== -->
-
-<!-- Add Product -->
+<!-- MODALS -->
 <div id="product-modal" class="modal">
   <div class="modal-content">
-    <div class="modal-header">Add New Product <span class="modal-close" onclick="closeModal('product-modal')">✕</span></div>
-    <div class="form-group"><label>Product Name</label><input id="p-name" type="text" required /></div>
-    <div class="form-group"><label>Price ($)</label><input id="p-price" type="number" step="0.01" required /></div>
-    <div class="form-group"><label>Stock Quantity</label><input id="p-stock" type="number" required /></div>
-    <div class="form-group"><label>Category</label><input id="p-category" type="text" required /></div>
-    <div class="form-group"><label>Description</label><textarea id="p-desc" rows="3"></textarea></div>
-    <button class="btn btn-primary" style="width:100%" onclick="addProduct()">Add Product</button>
+    <div class="modal-header">Add Product <span class="modal-close" onclick="closeModal('product-modal')">X</span></div>
+    <div class="form-group"><label>Name *</label><input id="p-name" type="text" /></div>
+    <div class="form-group"><label>Price ($) *</label><input id="p-price" type="number" step="0.01" /></div>
+    <div class="form-group"><label>Stock *</label><input id="p-stock" type="number" /></div>
+    <div class="form-group"><label>Category</label><input id="p-category" type="text" /></div>
+    <div class="form-group"><label>Description</label><textarea id="p-desc" rows="2"></textarea></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:.5rem" onclick="addProduct()">Add Product</button>
   </div>
 </div>
 
-<!-- Add Customer -->
 <div id="customer-modal" class="modal">
   <div class="modal-content">
-    <div class="modal-header">Add New Customer <span class="modal-close" onclick="closeModal('customer-modal')">✕</span></div>
-    <div class="form-group"><label>Full Name</label><input id="c-name" type="text" required /></div>
-    <div class="form-group"><label>Email</label><input id="c-email" type="email" required /></div>
-    <div class="form-group"><label>Phone</label><input id="c-phone" type="tel" required /></div>
-    <div class="form-group"><label>Address</label><input id="c-address" type="text" required /></div>
-    <button class="btn btn-primary" style="width:100%" onclick="addCustomer()">Add Customer</button>
+    <div class="modal-header">Add Customer <span class="modal-close" onclick="closeModal('customer-modal')">X</span></div>
+    <div class="form-group"><label>Name *</label><input id="c-name" type="text" /></div>
+    <div class="form-group"><label>Email *</label><input id="c-email" type="email" /></div>
+    <div class="form-group"><label>Phone</label><input id="c-phone" type="tel" /></div>
+    <div class="form-group"><label>Address</label><input id="c-address" type="text" /></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:.5rem" onclick="addCustomer()">Add Customer</button>
   </div>
 </div>
 
-<!-- Place Order -->
 <div id="order-modal" class="modal">
   <div class="modal-content">
-    <div class="modal-header">Place New Order <span class="modal-close" onclick="closeModal('order-modal')">✕</span></div>
-    <div class="form-group"><label>Customer</label>
-      <select id="o-customer"><option value="">Select a customer…</option></select></div>
-    <div class="form-group"><label>Product</label>
-      <select id="o-product"><option value="">Select a product…</option></select></div>
-    <div class="form-group"><label>Quantity</label><input id="o-qty" type="number" min="1" value="1" /></div>
-    <button class="btn btn-primary" style="width:100%" onclick="placeOrder()">Place Order</button>
+    <div class="modal-header">Place Order <span class="modal-close" onclick="closeModal('order-modal')">X</span></div>
+    <div class="form-group"><label>Customer *</label><select id="o-customer"><option value="">Select...</option></select></div>
+    <div class="form-group"><label>Product *</label><select id="o-product"><option value="">Select...</option></select></div>
+    <div class="form-group"><label>Quantity *</label><input id="o-qty" type="number" min="1" value="1" /></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:.5rem" onclick="placeOrder()">Place Order</button>
   </div>
 </div>
 
-<!-- Adjust Stock -->
 <div id="stock-modal" class="modal">
   <div class="modal-content">
-    <div class="modal-header">Adjust Stock <span class="modal-close" onclick="closeModal('stock-modal')">✕</span></div>
-    <input type="hidden" id="adj-product-id" />
-    <div class="form-group"><label>Product</label><input id="adj-product-name" type="text" disabled /></div>
+    <div class="modal-header">Adjust Stock <span class="modal-close" onclick="closeModal('stock-modal')">X</span></div>
+    <input type="hidden" id="adj-id" />
+    <div class="form-group"><label>Product</label><input id="adj-name" type="text" disabled /></div>
     <div class="form-group"><label>New Stock Quantity</label><input id="adj-stock" type="number" min="0" /></div>
-    <button class="btn btn-primary" style="width:100%" onclick="adjustStock()">Update Stock</button>
+    <button class="btn btn-primary" style="width:100%;margin-top:.5rem" onclick="adjustStock()">Update Stock</button>
   </div>
 </div>
 
-<!-- ======================== SCRIPTS ======================== -->
 <script>
-const API = '';   // same origin — express serves index.html
+// ============================================================
+//  IN-MEMORY DEMO DATA  (mirrors MySQL schema structure)
+// ============================================================
+const demo = {
+  products: [
+    { id:1, name:'Laptop',     price:999.99, stock:15, category:'Electronics', description:'High-performance laptop',      created_at: new Date().toISOString() },
+    { id:2, name:'Mouse',      price:29.99,  stock:50, category:'Accessories', description:'Wireless ergonomic mouse',     created_at: new Date().toISOString() },
+    { id:3, name:'Keyboard',   price:79.99,  stock:30, category:'Accessories', description:'Mechanical RGB keyboard',      created_at: new Date().toISOString() },
+    { id:4, name:'Monitor',    price:399.99, stock:8,  category:'Electronics', description:'27-inch 4K monitor',           created_at: new Date().toISOString() },
+    { id:5, name:'Headphones', price:149.99, stock:25, category:'Audio',       description:'Noise-cancelling headphones',  created_at: new Date().toISOString() },
+    { id:6, name:'Webcam',     price:89.99,  stock:0,  category:'Accessories', description:'1080p HD webcam',              created_at: new Date().toISOString() },
+  ],
+  customers: [
+    { id:1, name:'John Doe',   email:'john@example.com', phone:'123-456-7890', address:'123 Main St', date_joined:new Date().toISOString(), total_orders:2, total_spent:1029.98 },
+    { id:2, name:'Jane Smith', email:'jane@example.com', phone:'987-654-3210', address:'456 Oak Ave', date_joined:new Date().toISOString(), total_orders:1, total_spent:399.99  },
+    { id:3, name:'Ali Khan',   email:'ali@example.com',  phone:'555-123-4567', address:'789 Pine Rd', date_joined:new Date().toISOString(), total_orders:0, total_spent:0       },
+  ],
+  orders: [
+    { id:1, order_code:'ORD-0001', customer_id:1, product_id:1, customer_name:'John Doe',   product_name:'Laptop',  quantity:1, total:999.99,  status:'delivered', created_at:new Date().toISOString() },
+    { id:2, order_code:'ORD-0002', customer_id:1, product_id:2, customer_name:'John Doe',   product_name:'Mouse',   quantity:1, total:29.99,   status:'shipped',   created_at:new Date().toISOString() },
+    { id:3, order_code:'ORD-0003', customer_id:2, product_id:4, customer_name:'Jane Smith', product_name:'Monitor', quantity:1, total:399.99,  status:'pending',   created_at:new Date().toISOString() },
+  ],
+  nextProductId:  7,
+  nextCustomerId: 4,
+  nextOrderId:    4,
+};
 
-// ─── NAVIGATION ───────────────────────────────────────────
+// ============================================================
+//  SERVER DETECTION  — tries real API, falls back to demo
+// ============================================================
+let USE_SERVER = false;
+
+async function detectMode() {
+  try {
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 2000);
+    const res   = await fetch('/api/dashboard', { signal: ctrl.signal });
+    clearTimeout(timer);
+    USE_SERVER  = res.ok;
+  } catch { USE_SERVER = false; }
+
+  const banner = document.getElementById('mode-banner');
+  if (USE_SERVER) {
+    banner.className   = 'live';
+    banner.textContent = 'LIVE MODE — Connected to MySQL via Express server.';
+  } else {
+    banner.className  = 'demo';
+    banner.innerHTML  = 'DEMO MODE — Running with sample data (server not running). For real MySQL: run npm start then open http://localhost:3000';
+  }
+}
+
+async function apiFetch(method, path, body) {
+  const opts = { method, headers:{ 'Content-Type':'application/json' } };
+  if (body) opts.body = JSON.stringify(body);
+  const res  = await fetch('/api' + path, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'API error');
+  return data;
+}
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
 document.querySelectorAll('.nav-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
-    const tab = btn.dataset.tab;
-    document.getElementById(tab).classList.add('active');
-    if (tab === 'dashboard')  loadDashboard();
-    if (tab === 'products')   loadProducts();
-    if (tab === 'orders')     loadOrders();
-    if (tab === 'customers')  loadCustomers();
-    if (tab === 'inventory')  loadInventory();
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    ({ dashboard:loadDashboard, products:loadProducts, orders:loadOrders,
+       customers:loadCustomers, inventory:loadInventory })[btn.dataset.tab]?.();
   });
 });
 
-// ─── MODAL HELPERS ─────────────────────────────────────────
-function openModal(id)  { document.getElementById(id).classList.add('active'); }
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+// ============================================================
+//  HELPERS
+// ============================================================
+const openModal  = id => document.getElementById(id).classList.add('active');
+const closeModal = id => document.getElementById(id).classList.remove('active');
+const clearFields = ids => ids.forEach(id => document.getElementById(id).value = '');
+const fmt     = n => '$' + Number(n).toFixed(2);
+const fmtDate = d => new Date(d).toLocaleDateString();
+const catIcon = c => {
+  c = (c||'').toLowerCase();
+  return c.includes('electron') ? '&#x1F4BB;' : c.includes('audio') ? '&#x1F3A7;' : c.includes('access') ? '&#x1F5B1;' : '&#x1F4E6;';
+};
 
-// ─── ALERT HELPER ──────────────────────────────────────────
-function showAlert(msg, type='success', containerId='products-alert') {
-  const el = document.getElementById(containerId);
+function showAlert(msg, type='success', cid='products-alert') {
+  const el = document.getElementById(cid);
   el.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
-  setTimeout(() => el.innerHTML = '', 4000);
+  setTimeout(() => { el.innerHTML = ''; }, 4000);
 }
 
-// ─── ICON BY CATEGORY ──────────────────────────────────────
-function categoryIcon(cat = '') {
-  const c = cat.toLowerCase();
-  if (c.includes('electron')) return '💻';
-  if (c.includes('audio'))    return '🎧';
-  if (c.includes('access'))   return '🖱️';
-  return '📦';
-}
-
-// ─── DASHBOARD ─────────────────────────────────────────────
+// ============================================================
+//  DASHBOARD
+// ============================================================
 async function loadDashboard() {
-  try {
-    const data = await fetch(`${API}/api/dashboard`).then(r => r.json());
-    document.getElementById('stat-products').textContent  = data.total_products;
-    document.getElementById('stat-customers').textContent = data.total_customers;
-    document.getElementById('stat-orders').textContent    = data.total_orders;
-    document.getElementById('stat-revenue').textContent   = `$${Number(data.revenue).toFixed(2)}`;
-
-    const tbody = document.getElementById('recent-orders-body');
-    if (!data.recent_orders.length) {
-      tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No orders yet</td></tr>`;
-      return;
-    }
-    tbody.innerHTML = data.recent_orders.map(o => `
-      <tr>
-        <td><strong>${o.order_code}</strong></td>
-        <td>${o.customer_name}</td>
-        <td>${o.product_name}</td>
-        <td>$${Number(o.total).toFixed(2)}</td>
-        <td><span class="badge badge-${o.status}">${o.status}</span></td>
-        <td>${new Date(o.created_at).toLocaleDateString()}</td>
-      </tr>`).join('');
-  } catch (e) {
-    console.error('Dashboard error:', e);
+  let d;
+  if (USE_SERVER) {
+    d = await apiFetch('GET', '/dashboard');
+  } else {
+    const rev = demo.orders.filter(o => o.status !== 'cancelled').reduce((s,o) => s + o.total, 0);
+    d = { total_products:demo.products.length, total_customers:demo.customers.length,
+          total_orders:demo.orders.length, revenue:rev,
+          recent_orders:[...demo.orders].reverse().slice(0,5) };
   }
+  document.getElementById('stat-products').textContent  = d.total_products;
+  document.getElementById('stat-customers').textContent = d.total_customers;
+  document.getElementById('stat-orders').textContent    = d.total_orders;
+  document.getElementById('stat-revenue').textContent   = fmt(d.revenue);
+
+  const tbody = document.getElementById('recent-tbody');
+  tbody.innerHTML = d.recent_orders.length
+    ? d.recent_orders.map(o => `<tr>
+        <td><strong>${o.order_code}</strong></td><td>${o.customer_name}</td>
+        <td>${o.product_name}</td><td>${fmt(o.total)}</td>
+        <td><span class="badge badge-${o.status}">${o.status}</span></td>
+        <td>${fmtDate(o.created_at)}</td></tr>`).join('')
+    : `<tr><td colspan="6"><div class="empty"><div class="empty-icon">&#x1F4CB;</div>No orders yet</div></td></tr>`;
 }
 
-// ─── PRODUCTS ──────────────────────────────────────────────
+// ============================================================
+//  PRODUCTS
+// ============================================================
 async function loadProducts() {
-  const grid = document.getElementById('products-grid');
-  grid.innerHTML = `<div class="loading"><div class="spinner"></div>Loading…</div>`;
-  const products = await fetch(`${API}/api/products`).then(r => r.json());
-
-  if (!products.length) {
-    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><p>No products yet. Add one!</p></div>`;
+  const items = USE_SERVER ? await apiFetch('GET','/products') : demo.products;
+  const grid  = document.getElementById('products-grid');
+  if (!items.length) {
+    grid.innerHTML = `<div class="empty"><div class="empty-icon">&#x1F4E6;</div><p>No products yet.</p></div>`;
     return;
   }
-
-  grid.innerHTML = products.map(p => {
-    const stockClass = p.stock === 0 ? 'out' : p.stock < 10 ? 'low' : '';
-    const stockText  = p.stock === 0 ? '❌ Out of stock' : p.stock < 10 ? `⚠️ Low stock: ${p.stock}` : `✅ In stock: ${p.stock}`;
-    return `
-    <div class="product-card">
-      <div class="product-image">${categoryIcon(p.category)}</div>
+  grid.innerHTML = items.map(p => {
+    const sc = p.stock===0?'stock-out':p.stock<10?'stock-low':'stock-ok';
+    const st = p.stock===0?'Out of stock':p.stock<10?`Low stock: ${p.stock}`:`In stock: ${p.stock}`;
+    return `<div class="product-card">
+      <div class="product-img">${catIcon(p.category)}</div>
       <div class="product-body">
         <div class="product-name">${p.name}</div>
-        <div class="product-price">$${Number(p.price).toFixed(2)}</div>
-        <div class="product-stock ${stockClass}">${stockText}</div>
-        <small style="color:var(--text-secondary)">${p.category || ''}</small><br/><br/>
-        <button class="btn btn-danger btn-small" onclick="deleteProduct(${p.id})">🗑 Delete</button>
-      </div>
-    </div>`;
+        <div class="product-price">${fmt(p.price)}</div>
+        <div class="product-stock ${sc}">${st}</div>
+        <small style="color:var(--muted)">${p.category||''}</small><br/><br/>
+        <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">Delete</button>
+      </div></div>`;
   }).join('');
 }
 
 async function addProduct() {
-  const name        = document.getElementById('p-name').value.trim();
-  const price       = parseFloat(document.getElementById('p-price').value);
-  const stock       = parseInt(document.getElementById('p-stock').value);
-  const category    = document.getElementById('p-category').value.trim();
+  const name = document.getElementById('p-name').value.trim();
+  const price = parseFloat(document.getElementById('p-price').value);
+  const stock = parseInt(document.getElementById('p-stock').value);
+  const category = document.getElementById('p-category').value.trim();
   const description = document.getElementById('p-desc').value.trim();
-  if (!name || isNaN(price) || isNaN(stock)) return showAlert('Please fill all required fields.', 'danger');
-
-  const res = await fetch(`${API}/api/products`, {
-    method: 'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ name, price, stock, category, description })
-  });
-  if (res.ok) {
-    showAlert('Product added successfully! ✅');
-    closeModal('product-modal');
-    ['p-name','p-price','p-stock','p-category','p-desc'].forEach(id => document.getElementById(id).value = '');
-    loadProducts(); loadDashboard();
+  if (!name || isNaN(price) || isNaN(stock)) return showAlert('Please fill all required fields.','danger');
+  if (USE_SERVER) {
+    try { await apiFetch('POST','/products',{name,price,stock,category,description}); }
+    catch(e) { return showAlert(e.message,'danger'); }
   } else {
-    const err = await res.json();
-    showAlert(err.error || 'Failed to add product.', 'danger');
+    demo.products.push({ id:demo.nextProductId++, name, price, stock, category, description, created_at:new Date().toISOString() });
   }
+  showAlert('Product added!');
+  closeModal('product-modal');
+  clearFields(['p-name','p-price','p-stock','p-category','p-desc']);
+  loadProducts(); loadDashboard();
 }
 
 async function deleteProduct(id) {
   if (!confirm('Delete this product?')) return;
-  await fetch(`${API}/api/products/${id}`, { method:'DELETE' });
-  showAlert('Product deleted.', 'info');
+  if (USE_SERVER) { await apiFetch('DELETE',`/products/${id}`); }
+  else { const i=demo.products.findIndex(p=>p.id===id); if(i>-1) demo.products.splice(i,1); }
+  showAlert('Product deleted.','info');
   loadProducts(); loadDashboard();
 }
 
-// ─── CUSTOMERS ─────────────────────────────────────────────
+// ============================================================
+//  CUSTOMERS
+// ============================================================
 async function loadCustomers() {
-  const tbody = document.getElementById('customers-body');
-  const customers = await fetch(`${API}/api/customers`).then(r => r.json());
-
-  if (!customers.length) {
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">👤</div>No customers yet.</div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = customers.map(c => `
-    <tr>
-      <td>#${c.id}</td>
-      <td><strong>${c.name}</strong></td>
-      <td>${c.email}</td>
-      <td>${c.phone || '—'}</td>
-      <td>${c.total_orders}</td>
-      <td>$${Number(c.total_spent).toFixed(2)}</td>
-      <td>${new Date(c.date_joined).toLocaleDateString()}</td>
-      <td><button class="btn btn-danger btn-small" onclick="deleteCustomer(${c.id})">🗑</button></td>
-    </tr>`).join('');
+  const items = USE_SERVER ? await apiFetch('GET','/customers') : demo.customers;
+  const tbody = document.getElementById('customers-tbody');
+  tbody.innerHTML = items.length
+    ? items.map(c => `<tr>
+        <td>#${c.id}</td><td><strong>${c.name}</strong></td><td>${c.email}</td>
+        <td>${c.phone||'n/a'}</td><td>${c.total_orders||0}</td>
+        <td>${fmt(c.total_spent||0)}</td><td>${fmtDate(c.date_joined)}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteCustomer(${c.id})">Delete</button></td>
+      </tr>`).join('')
+    : `<tr><td colspan="8"><div class="empty"><div class="empty-icon">&#x1F464;</div>No customers yet.</div></td></tr>`;
 }
 
 async function addCustomer() {
-  const name    = document.getElementById('c-name').value.trim();
-  const email   = document.getElementById('c-email').value.trim();
-  const phone   = document.getElementById('c-phone').value.trim();
-  const address = document.getElementById('c-address').value.trim();
-  if (!name || !email) return showAlert('Name and email are required.', 'danger', 'customers-alert');
-
-  const res = await fetch(`${API}/api/customers`, {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ name, email, phone, address })
-  });
-  if (res.ok) {
-    showAlert('Customer added! ✅', 'success', 'customers-alert');
-    closeModal('customer-modal');
-    ['c-name','c-email','c-phone','c-address'].forEach(id => document.getElementById(id).value = '');
-    loadCustomers(); loadDashboard();
+  const name=document.getElementById('c-name').value.trim();
+  const email=document.getElementById('c-email').value.trim();
+  const phone=document.getElementById('c-phone').value.trim();
+  const address=document.getElementById('c-address').value.trim();
+  if (!name||!email) return showAlert('Name and email are required.','danger','customers-alert');
+  if (USE_SERVER) {
+    try { await apiFetch('POST','/customers',{name,email,phone,address}); }
+    catch(e) { return showAlert(e.message,'danger','customers-alert'); }
   } else {
-    const err = await res.json();
-    showAlert(err.error || 'Failed to add customer.', 'danger', 'customers-alert');
+    if (demo.customers.find(c=>c.email===email)) return showAlert('Email already exists.','danger','customers-alert');
+    demo.customers.push({ id:demo.nextCustomerId++, name, email, phone, address, date_joined:new Date().toISOString(), total_orders:0, total_spent:0 });
   }
+  showAlert('Customer added!','success','customers-alert');
+  closeModal('customer-modal');
+  clearFields(['c-name','c-email','c-phone','c-address']);
+  loadCustomers(); loadDashboard();
 }
 
 async function deleteCustomer(id) {
   if (!confirm('Delete this customer?')) return;
-  await fetch(`${API}/api/customers/${id}`, { method:'DELETE' });
-  showAlert('Customer deleted.', 'info', 'customers-alert');
+  if (USE_SERVER) { await apiFetch('DELETE',`/customers/${id}`); }
+  else { const i=demo.customers.findIndex(c=>c.id===id); if(i>-1) demo.customers.splice(i,1); }
+  showAlert('Customer deleted.','info','customers-alert');
   loadCustomers(); loadDashboard();
 }
 
-// ─── ORDERS ────────────────────────────────────────────────
+// ============================================================
+//  ORDERS
+// ============================================================
 async function loadOrders() {
-  const tbody = document.getElementById('orders-body');
-  const orders = await fetch(`${API}/api/orders`).then(r => r.json());
-
-  if (!orders.length) {
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📋</div>No orders yet.</div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = orders.map(o => `
-    <tr>
-      <td><strong>${o.order_code}</strong></td>
-      <td>${o.customer_name}</td>
-      <td>${o.product_name}</td>
-      <td>${o.quantity}</td>
-      <td>$${Number(o.total).toFixed(2)}</td>
-      <td><span class="badge badge-${o.status}">${o.status}</span></td>
-      <td>${new Date(o.created_at).toLocaleDateString()}</td>
-      <td>
-        <select class="btn btn-secondary btn-small" onchange="updateOrderStatus(${o.id}, this.value)">
-          ${['pending','shipped','delivered','cancelled'].map(s =>
-            `<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join('')}
-        </select>
-      </td>
-    </tr>`).join('');
+  const items = USE_SERVER ? await apiFetch('GET','/orders') : demo.orders;
+  const tbody = document.getElementById('orders-tbody');
+  tbody.innerHTML = items.length
+    ? [...items].reverse().map(o => `<tr>
+        <td><strong>${o.order_code}</strong></td><td>${o.customer_name}</td>
+        <td>${o.product_name}</td><td>${o.quantity}</td><td>${fmt(o.total)}</td>
+        <td><span class="badge badge-${o.status}">${o.status}</span></td>
+        <td>${fmtDate(o.created_at)}</td>
+        <td><select class="btn btn-secondary btn-sm" onchange="updateOrderStatus(${o.id},this.value)">
+          ${['pending','shipped','delivered','cancelled'].map(s=>`<option value="${s}"${o.status===s?' selected':''}>${s}</option>`).join('')}
+        </select></td></tr>`).join('')
+    : `<tr><td colspan="8"><div class="empty"><div class="empty-icon">&#x1F4CB;</div>No orders yet.</div></td></tr>`;
 }
 
 async function openOrderModal() {
-  const [customers, products] = await Promise.all([
-    fetch(`${API}/api/customers`).then(r => r.json()),
-    fetch(`${API}/api/products`).then(r => r.json()),
-  ]);
+  const customers = USE_SERVER ? await apiFetch('GET','/customers') : demo.customers;
+  const products  = USE_SERVER ? await apiFetch('GET','/products')  : demo.products;
   document.getElementById('o-customer').innerHTML =
-    `<option value="">Select customer…</option>` +
-    customers.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    `<option value="">Select customer...</option>` + customers.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
   document.getElementById('o-product').innerHTML =
-    `<option value="">Select product…</option>` +
-    products.map(p => `<option value="${p.id}">${p.name} — $${Number(p.price).toFixed(2)} (Stock: ${p.stock})</option>`).join('');
+    `<option value="">Select product...</option>` + products.map(p=>`<option value="${p.id}">${p.name} - ${fmt(p.price)} (Stock: ${p.stock})</option>`).join('');
   openModal('order-modal');
 }
 
 async function placeOrder() {
-  const customer_id = document.getElementById('o-customer').value;
-  const product_id  = document.getElementById('o-product').value;
-  const quantity    = parseInt(document.getElementById('o-qty').value);
-  if (!customer_id || !product_id || isNaN(quantity) || quantity < 1)
-    return showAlert('Please fill all fields correctly.', 'danger', 'orders-alert');
-
-  const res = await fetch(`${API}/api/orders`, {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ customer_id, product_id, quantity })
-  });
-  if (res.ok) {
-    showAlert('Order placed successfully! ✅', 'success', 'orders-alert');
-    closeModal('order-modal');
-    loadOrders(); loadDashboard();
+  const cid = parseInt(document.getElementById('o-customer').value);
+  const pid = parseInt(document.getElementById('o-product').value);
+  const qty = parseInt(document.getElementById('o-qty').value);
+  if (!cid||!pid||isNaN(qty)||qty<1) return showAlert('Please fill all fields correctly.','danger','orders-alert');
+  if (USE_SERVER) {
+    try { await apiFetch('POST','/orders',{customer_id:cid,product_id:pid,quantity:qty}); }
+    catch(e) { return showAlert(e.message,'danger','orders-alert'); }
   } else {
-    const err = await res.json();
-    showAlert(err.error || 'Failed to place order.', 'danger', 'orders-alert');
+    const product  = demo.products.find(p=>p.id===pid);
+    const customer = demo.customers.find(c=>c.id===cid);
+    if (!product) return showAlert('Product not found.','danger','orders-alert');
+    if (product.stock < qty) return showAlert('Insufficient stock!','danger','orders-alert');
+    const oid   = demo.nextOrderId++;
+    const code  = 'ORD-' + String(oid).padStart(4,'0');
+    const total = product.price * qty;
+    demo.orders.push({ id:oid, order_code:code, customer_id:cid, product_id:pid,
+      customer_name:customer.name, product_name:product.name,
+      quantity:qty, total, status:'pending', created_at:new Date().toISOString() });
+    product.stock -= qty;
+    customer.total_orders++;
+    customer.total_spent = (customer.total_spent||0) + total;
   }
+  showAlert('Order placed!','success','orders-alert');
+  closeModal('order-modal');
+  loadOrders(); loadProducts(); loadDashboard();
 }
 
 async function updateOrderStatus(id, status) {
-  await fetch(`${API}/api/orders/${id}/status`, {
-    method:'PATCH', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ status })
-  });
-  showAlert(`Order updated to "${status}".`, 'success', 'orders-alert');
+  if (USE_SERVER) { await apiFetch('PATCH',`/orders/${id}/status`,{status}); }
+  else { const o=demo.orders.find(o=>o.id===id); if(o) o.status=status; }
+  showAlert(`Status updated to "${status}".`,'success','orders-alert');
   loadOrders(); loadDashboard();
 }
 
-// ─── INVENTORY ─────────────────────────────────────────────
+// ============================================================
+//  INVENTORY
+// ============================================================
 async function loadInventory() {
-  const tbody = document.getElementById('inventory-body');
-  const products = await fetch(`${API}/api/products`).then(r => r.json());
-
-  if (!products.length) {
-    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">No products.</div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = products.map(p => {
-    const status = p.stock === 0 ? '❌ Out of Stock' : p.stock < 10 ? '⚠️ Low Stock' : '✅ In Stock';
-    const color  = p.stock === 0 ? 'var(--danger)' : p.stock < 10 ? 'var(--warning)' : 'var(--success)';
-    return `
-    <tr>
-      <td><strong>${p.name}</strong></td>
-      <td>${p.category || '—'}</td>
-      <td><strong style="font-size:1.1rem">${p.stock}</strong> units</td>
-      <td style="color:${color};font-weight:600">${status}</td>
-      <td>$${Number(p.price).toFixed(2)}</td>
-      <td>
-        <button class="btn btn-secondary btn-small"
-          onclick="openStockModal(${p.id},'${p.name}',${p.stock})">Adjust</button>
-      </td>
-    </tr>`;
-  }).join('');
+  const items = USE_SERVER ? await apiFetch('GET','/products') : demo.products;
+  const tbody = document.getElementById('inventory-tbody');
+  tbody.innerHTML = items.length
+    ? items.map(p => {
+        const [status,color] = p.stock===0 ? ['Out of Stock','var(--danger)']
+                             : p.stock<10  ? ['Low Stock',   'var(--warning)']
+                                           : ['In Stock',    'var(--success)'];
+        return `<tr>
+          <td><strong>${p.name}</strong></td><td>${p.category||'n/a'}</td>
+          <td style="font-size:1.1rem;font-weight:700">${p.stock}</td>
+          <td style="color:${color};font-weight:600">${status}</td>
+          <td>${fmt(p.price)}</td>
+          <td><button class="btn btn-secondary btn-sm" onclick="openStockModal(${p.id},'${p.name}',${p.stock})">Adjust</button></td>
+        </tr>`;
+      }).join('')
+    : `<tr><td colspan="6"><div class="empty">No products.</div></td></tr>`;
 }
 
 function openStockModal(id, name, stock) {
-  document.getElementById('adj-product-id').value   = id;
-  document.getElementById('adj-product-name').value = name;
-  document.getElementById('adj-stock').value         = stock;
+  document.getElementById('adj-id').value    = id;
+  document.getElementById('adj-name').value  = name;
+  document.getElementById('adj-stock').value = stock;
   openModal('stock-modal');
 }
 
 async function adjustStock() {
-  const id    = document.getElementById('adj-product-id').value;
+  const id    = parseInt(document.getElementById('adj-id').value);
   const stock = parseInt(document.getElementById('adj-stock').value);
-  if (isNaN(stock) || stock < 0) return alert('Enter a valid stock quantity.');
-
-  await fetch(`${API}/api/products/${id}`, {
-    method:'PATCH', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ stock })
-  });
+  if (isNaN(stock)||stock<0) return alert('Enter a valid quantity.');
+  if (USE_SERVER) { await apiFetch('PATCH',`/products/${id}`,{stock}); }
+  else { const p=demo.products.find(p=>p.id===id); if(p) p.stock=stock; }
   closeModal('stock-modal');
   loadInventory(); loadProducts(); loadDashboard();
 }
 
-// ─── INIT ──────────────────────────────────────────────────
-loadDashboard();
-loadProducts();
+// ============================================================
+//  INIT
+// ============================================================
+(async () => {
+  await detectMode();
+  loadDashboard();
+  loadProducts();
+})();
 </script>
 </body>
 </html>
