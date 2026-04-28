@@ -317,8 +317,8 @@ async function detectMode() {
     banner.className   = 'live';
     banner.textContent = 'LIVE MODE — Connected to MySQL via Express server.';
   } else {
-    banner.className  = 'demo';
-    banner.innerHTML  = 'DEMO MODE — Running with sample data (server not running). For real MySQL: run npm start then open http://localhost:3000';
+    banner.className  = '';
+    banner.innerHTML  = '';
   }
 }
 
